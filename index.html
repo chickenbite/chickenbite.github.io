@@ -1,169 +1,52 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>net.view - em breve</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: #000;
-      overflow: hidden;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      height: 100%;
-      width: 100%;
-    }
-
-    canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 1;
-    }
-
-    .content {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      z-index: 2;
-      color: #00ffe0;
-      text-shadow: 0 0 20px #00ffe0, 0 0 60px #00ffe0;
-      animation: fadeIn 2s ease-in-out 1s forwards;
-      opacity: 0;
-    }
-
-    .title {
-      font-size: 4em;
-      margin-bottom: 20px;
-    }
-
-    .subtitle {
-      font-size: 1.5em;
-      color: #ffffffbb;
-    }
-
-    @keyframes fadeIn {
-      to {
-        opacity: 1;
-      }
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChickenBite 🐔</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <canvas id="networkCanvas"></canvas>
-  <div class="content">
-    <div class="title">net.view(alpha)</div>
-    <div class="subtitle">analizador de rede
-        <p>Em Breve</p>
-    </div>
-  </div>
+  <header>
+    <h1>🐔 ChickenBite</h1>
+    <p>Desenvolvido por Gustavo Biten • Amo galinhas ❤️</p>
+  </header>
 
-  <script>
-    const canvas = document.getElementById('networkCanvas');
-    const ctx = canvas.getContext('2d');
-    let particlesArray;
+  <nav>
+    <ul>
+      <li><a href="#cursos">Mini Cursos</a></li>
+      <li><a href="#projetos">Projetos</a></li>
+      <li><a href="#contato">Contato</a></li>
+    </ul>
+  </nav>
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+  <main>
+    <section id="cursos">
+      <h2>📚 Mini Cursos</h2>
+      <ul>
+        <li><strong>Python Básico:</strong> Tutorial interativo para iniciantes.</li>
+        <li><strong>HTML e CSS:</strong> Aprenda a criar sites bonitos e modernos.</li>
+      </ul>
+    </section>
 
-    window.addEventListener('resize', function(){
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      init();
-    });
+    <section id="projetos">
+      <h2>🛠️ Meus Projetos</h2>
+      <ul>
+        <li><strong>Biblioteca Python:</strong> Ferramentas úteis que você pode importar.</li>
+        <li><strong>Analyzer de Rede:</strong> Em desenvolvimento — prévia de testes em <em>20/07/2025</em>.</li>
+      </ul>
+    </section>
 
-    const mouse = {
-      x: null,
-      y: null,
-      radius: 100
-    };
+    <section id="contato">
+      <h2>📬 Contato</h2>
+      <p>Veja meu GitHub em: <a href="https://github.com/seu-usuario" target="_blank">github.com/seu-usuario</a></p>
+    </section>
+  </main>
 
-    window.addEventListener('mousemove', function(event){
-      mouse.x = event.x;
-      mouse.y = event.y;
-    });
+  <footer>
+    <p>&copy; 2025 ChickenBite por Gustavo Biten</p>
+  </footer>
 
-    class Particle {
-      constructor(x, y, directionX, directionY, size, color){
-        this.x = x;
-        this.y = y;
-        this.directionX = directionX;
-        this.directionY = directionY;
-        this.size = size;
-        this.color = color;
-      }
-
-      draw(){
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-        ctx.fillStyle = this.color;
-        ctx.fill();
-      }
-
-      update(){
-        if(this.x > canvas.width || this.x < 0) this.directionX *= -1;
-        if(this.y > canvas.height || this.y < 0) this.directionY *= -1;
-
-        let dx = mouse.x - this.x;
-        let dy = mouse.y - this.y;
-        let distance = Math.sqrt(dx * dx + dy * dy);
-        if(distance < mouse.radius + this.size){
-          this.x -= dx / 20;
-          this.y -= dy / 20;
-        }
-
-        this.x += this.directionX;
-        this.y += this.directionY;
-        this.draw();
-      }
-    }
-
-    function connect(){
-      for(let a = 0; a < particlesArray.length; a++){
-        for(let b = a; b < particlesArray.length; b++){
-          let dx = particlesArray[a].x - particlesArray[b].x;
-          let dy = particlesArray[a].y - particlesArray[b].y;
-          let distance = dx * dx + dy * dy;
-          if(distance < 6000){
-            let opacity = 1 - distance / 6000;
-            ctx.strokeStyle = "rgba(0,255,224," + opacity + ")";
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
-            ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
-            ctx.stroke();
-          }
-        }
-      }
-    }
-
-    function init(){
-      particlesArray = [];
-      let numberOfParticles = (canvas.height * canvas.width) / 9000;
-      for(let i = 0; i < numberOfParticles; i++){
-        let size = (Math.random() * 2) + 1;
-        let x = Math.random() * canvas.width;
-        let y = Math.random() * canvas.height;
-        let directionX = (Math.random() - 0.5) * 1;
-        let directionY = (Math.random() - 0.5) * 1;
-        let color = '#00ffe0';
-        particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
-      }
-    }
-
-    function animate(){
-      requestAnimationFrame(animate);
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for(let i = 0; i < particlesArray.length; i++){
-        particlesArray[i].update();
-      }
-      connect();
-    }
-
-    init();
-    animate();
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
